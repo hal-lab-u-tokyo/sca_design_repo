@@ -1,11 +1,11 @@
 #
 #    Copyright (C) 2025 The University of Tokyo
 #    
-#    File:          /sca_common_designs/aes128_hls/create_ip.tcl
-#    Project:       cw305-shell
+#    File:          /examples/ip_repo/aes128_hls/create_ip.tcl
+#    Project:       sca_design_repo
 #    Author:        Takuya Kojima in The University of Tokyo (tkojima@hal.ipc.i.u-tokyo.ac.jp)
 #    Created Date:  24-01-2025 07:00:59
-#    Last Modified: 24-01-2025 07:01:04
+#    Last Modified: 25-01-2025 04:40:24
 #
 
 
@@ -14,6 +14,7 @@ set target_board ""
 set target_freq 50MHz
 
 set script_file [file tail [info script]]
+set script_dir [file dirname [info script]]
 
 # option format
 # target-board=<board_name> target-freq=<frequency> target-part=<part_name>
@@ -41,10 +42,10 @@ if { $target_board eq "" } {
 open_project -reset hls_${target_board}_aes_enc
 
 # Add design files
-add_files src/Sbox_Composite.cpp
-add_files src/AES_Encrypt.cpp
+add_files ${script_dir}/src/Sbox_Composite.cpp
+add_files ${script_dir}/src/AES_Encrypt.cpp
 # Add test bench & files
-add_files -tb test/test_aes.cpp
+add_files -tb ${script_dir}/test/test_aes.cpp
 
 # Set the top-level function
 set_top AES128Encrypt
