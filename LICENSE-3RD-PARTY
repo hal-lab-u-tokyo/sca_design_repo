@@ -1,0 +1,11 @@
+This repository contains several third-party implementation files whose copyrights are owned by the respective authors. These files are distributed under the individual licenses. The list of third-party implementation files and their respective licenses are as follows:
+
+* In aist_aes_core_1_0/hdl
+	* File: aes_composite_enc.v
+	* Copyright (C) 2012 AIST
+	* License: See header of the file
+
+* In googlevault_aes_core_1_0/hdl
+	* Files: aes_core.v aes_ks.v aes_sbox.v
+	*  Copyright 2015, Google Inc.
+	*  License: Apache License, Version 2.0, http://www.apache.org/licenses/LICENSE-2.0

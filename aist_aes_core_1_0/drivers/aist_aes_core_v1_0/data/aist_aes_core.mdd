@@ -1,0 +1,10 @@
+
+
+OPTION psf_version = 2.1;
+
+BEGIN DRIVER aist_aes_core
+	OPTION supported_peripherals = (aist_aes_core);
+	OPTION copyfiles = all;
+	OPTION VERSION = 1.0;
+	OPTION NAME = aist_aes_core;
+END DRIVER

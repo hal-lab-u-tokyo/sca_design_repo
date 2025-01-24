@@ -1,0 +1,115 @@
+# SCA Hardware design examples repository
+
+This repository contains examples of cryptographic hardware designs mainly for side-channel attack research.
+Each example can be implemented on ChipWhisperer CW305 FPGA and SAKURA-X FPGA using our FPGA shell.
+For block design examples for each board, please refer to each shell repository: [CW305](https://github.com/hal-lab-u-tokyo/cw305-shell) and [SAKURA-X](https://github.com/hal-lab-u-tokyo/sakura-x-shell/).
+
+# Verified boards/tools
+* Vivao/Vitis 2023.2
+* ChipWhisperer CW305 board
+* Kintex-7 FPGA on SAKURA-X board
+* ZCU-104 Evaluation Kit
+
+# List of examples
+* aes128_hls: Vitis HLS implementation of AES-128 encryption.
+* aist_aes_core: A wrapper module for the AES-128 encryption core developed by AIST
+* googlevault_aes_core: A wrapper module for the AES-128 encryption core released for Google ProjectVault
+
+Some files are copyrighted and licensed by the original authors.
+Please see [LICENSE-3RD-PARTY](LICENSE-3RD-PARTY) for details.
+
+## aes128_hls
+
+To create an IP core from the HLS code, go to [aes128_hls](./aes128_hls) and run the following command:
+
+```
+vitis_hls -f create_ip.tcl target_board=<board_name> [target-freq=<frequency>] [target-part=<part_name>]
+```
+
+`target_board` argument is mandatory and `cw305` or `sakura-x` can be specified.
+Then, the HLS project will be created in the hls_<board_name>_aes_enc.
+The other arguments are optional.
+If you want to specify the target frequency, you can set `target-freq` argument. The default value is 50 MHz.
+If you want to specify the target FPGA part other than the supported boards, you can set `target-part` argument.
+
+As shown in the following figure, the IP core has an AXI4-Lite slave port to control the encryption process and an AXI4 master port to read/write data including key, plaintext, and ciphertext.
+Therefore, AXI4 accessible registers or block memory is needed for key, plaintext, and ciphertext.
+
+<img src="docs/images/hls_ip.png" width="400" style="display: block; margin: auto;"/>
+
+The HLS IP core has AXI4 Lite slave interface to control the encryption process and set memory addresses of key, plaintext, and ciphertext.
+See [AMD UG1399](https://docs.amd.com/r/2023.2-English/ug1399-vitis-hls) for more details about the control and status registers.
+
+
+Address offset for each control register is as follows:
+
+- 0x00 : Control signals
+    -   bit 0  - ap_start (Read/Write/COH)
+    -   bit 1  - ap_done (Read)
+    -   bit 2  - ap_idle (Read)
+    -   bit 3  - ap_ready (Read/COR)
+    -   bit 4  - ap_continue (Read/Write/SC)
+    -   bit 7  - auto_restart (Read/Write)
+    -   bit 9  - interrupt (Read)
+    -   others - reserved
+- 0x10 : address of key
+- 0x18 : address of plaintext
+- 0x20 : address of ciphertext
+
+(SC = Self Clear, COR = Clear on Read, TOW = Toggle on Write, COH = Clear on Handshake)
+
+## aist_aes_core
+
+`aist_aes_core_1_0` directory can be added as an IP for Vivado.
+The IP core has an AXI4-Lite slave port to control the encryption process, send key and plaintext, and receive ciphertext.
+The memory-mapped registers are as follows:
+
+|      Address      |     Width   |   Description     |
+|:-----------------:|:-----------:|:-----------------:|
+| `BASE` + `0x00`   |   128 bit   |  Key (R/W)        |
+| `BASE` + `0x10`   |   128 bit   |  Plaintext (R/W)  |
+| `BASE` + `0x20`   |   128 bit   |  Ciphertext (R)   |
+| `BASE` + `0x30`   |   32 bit    |  Control          |
+
+If `control[1]` bit is set to 1, the key is written to the IP core.
+If `control[0]` bit is set to 1, the plain text is written to the IP core and the encryption process is started.
+
+An output port `o_running` is set to 1 while the encryption process is running.
+Thus, it can be used for triggering the oscilloscope.
+
+## googlevault_aes_core
+
+`googlevault_aes_core_1_0` directory can be added as an IP for Vivado.
+
+The IP core has an AXI4-Lite slave port to control the encryption process, send key and plaintext, and receive ciphertext.
+This implementation supports AES-128, AES-192, and AES-256.
+Although the original design can decrypt the ciphertext, this IP core disables the decryption function.
+
+The memory-mapped registers are as follows:
+|      Address      |     Width   |   Description     |
+|:-----------------:|:-----------:|:-----------------:|
+| `BASE` + `0x00`   |   256 bit   |  Key (R/W)        |
+| `BASE` + `0x20`   |   128 bit   |  Plaintext (R/W)  |
+| `BASE` + `0x30`   |   128 bit   |  Ciphertext (R)   |
+| `BASE` + `0x40`   |   32 bit    |  Control          |
+
+The control register is formatted as follows:
+| 31:4 | 3 | 2:1 | 0 |
+|:----:|:-:|:---:|:-:|
+| Unused | running (RO) | size (RW) | start (RW) |
+
+* running: 1 if the encryption process is running. It is the same as output signal `o_running`.
+* size: 00 for AES-128, 01 for AES-192, and 10 for AES-256.
+* start: writing 1 to start the encryption process.
+
+### external trigger
+The IP core has an external trigger input port `i_external_trigger`.
+CW305 shell has a dedicated channel for triggering the encryption without data access channel.
+This trigger channel is assumed to be connected to such a trigger signal.
+Please note that an IP parameter `ENABLE_EXTERNAL_TRIGGER` should be set to true to enable this feature.
+If this parameter is set to false, the trigger signal is hardwired to low level internally so that there is no need to connect the trigger signal.
+This parameter can be set in the IP customization GUI in Vivado block design.
+
+# License
+
+This repository is licensed under MIT License, see [LICENSE](LICENSE) for more information.
