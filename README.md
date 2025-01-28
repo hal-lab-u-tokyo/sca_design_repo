@@ -58,6 +58,13 @@ Address offset for each control register is as follows:
 
 (SC = Self Clear, COR = Clear on Read, TOW = Toggle on Write, COH = Clear on Handshake)
 
+## aes128_rsm_hls
+
+An HLS design with a masking scheme, RSM ([Maxime Nassar, et. al, DATE 2012](https://doi.org/10.1109/DATE.2012.6176671)).
+The control interface is the same as the original AES-128 HLS design.
+But it has an extra control register `rotate` to set the start rotation value (*j*) for the masking scheme.
+That register is usually mapped to the address offset 0x28.
+
 ## aist_aes_core
 
 `aist_aes_core_1_0` directory can be added as an IP for Vivado.

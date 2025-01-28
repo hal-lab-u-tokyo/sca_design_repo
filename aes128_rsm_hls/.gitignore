@@ -1,0 +1,3 @@
+hls_*_aes_enc
+*.log
+src/Masked_Table.cpp
