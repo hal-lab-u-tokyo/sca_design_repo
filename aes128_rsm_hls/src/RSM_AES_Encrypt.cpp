@@ -5,7 +5,7 @@
 *    Project:       sca_design_repo
 *    Author:        Takuya Kojima in The University of Tokyo (tkojima@hal.ipc.i.u-tokyo.ac.jp)
 *    Created Date:  14-07-2024 04:10:57
-*    Last Modified: 29-01-2025 04:51:44
+*    Last Modified: 14-03-2025 02:40:27
 */
 
 #include "ap_int.h"
@@ -185,7 +185,6 @@ void RSM_AES128Encrypt(const unsigned char *key, const unsigned char *plaintext,
 	unsigned char state[SIZE];
 	unsigned char scheduled_key[SIZE];
 	ap_int<8> rcon = 1;
-	ap_int<8> rcon_shift;
 
 	#pragma HLS array_partition variable=state complete
 	#pragma HLS array_partition variable=scheduled_key complete

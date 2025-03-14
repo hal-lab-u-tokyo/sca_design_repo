@@ -1,0 +1,10 @@
+
+
+OPTION psf_version = 2.1;
+
+BEGIN DRIVER aes128_rsm_rtl
+	OPTION supported_peripherals = (aes128_rsm_rtl);
+	OPTION copyfiles = all;
+	OPTION VERSION = 1.0;
+	OPTION NAME = aes128_rsm_rtl;
+END DRIVER

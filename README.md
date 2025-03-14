@@ -10,10 +10,16 @@ For block design examples for each board, please refer to each shell repository:
 * Kintex-7 FPGA on SAKURA-X board
 * ZCU-104 Evaluation Kit
 
+## Note
+Different versions of Vivado/Vitis may generate different address maps for register interfaces.
+Please check the address map in the generated IP core.
+
 # List of examples
-* aes128_hls: Vitis HLS implementation of AES-128 encryption.
+* aes128_hls: Vitis HLS implementation of AES-128 encryption
+* aes128_rsm_hls: Vitis HLS implementation of AES-128 encryption with RSM masking scheme
 * aist_aes_core: A wrapper module for the AES-128 encryption core developed by AIST
-* googlevault_aes_core: A wrapper module for the AES-128 encryption core released for Google ProjectVault
+* googlevault_aes_core: A wrapper module for the AES encryption core released for Google ProjectVault, supporting AES-128, AES-192, and AES-256 encryption.
+* aes128_rsm_rtl: RTL implementation of AES-128 encryption with the RSM masking scheme
 
 Some files are copyrighted and licensed by the original authors.
 Please see [LICENSE-3RD-PARTY](LICENSE-3RD-PARTY) for details.
@@ -39,7 +45,6 @@ Therefore, AXI4 accessible registers or block memory is needed for key, plaintex
 
 The HLS IP core has AXI4 Lite slave interface to control the encryption process and set memory addresses of key, plaintext, and ciphertext.
 See [AMD UG1399](https://docs.amd.com/r/2023.2-English/ug1399-vitis-hls) for more details about the control and status registers.
-
 
 Address offset for each control register is as follows:
 
@@ -67,7 +72,7 @@ That register is usually mapped to the address offset 0x28.
 
 ## aist_aes_core
 
-`aist_aes_core_1_0` directory can be added as an IP for Vivado.
+`aist_aes_core_1_0` directory can be added as an IP repository for Vivado.
 The IP core has an AXI4-Lite slave port to control the encryption process, send key and plaintext, and receive ciphertext.
 The memory-mapped registers are as follows:
 
@@ -86,7 +91,7 @@ Thus, it can be used for triggering the oscilloscope.
 
 ## googlevault_aes_core
 
-`googlevault_aes_core_1_0` directory can be added as an IP for Vivado.
+`googlevault_aes_core_1_0` directory can be added as an IP repository for Vivado.
 
 The IP core has an AXI4-Lite slave port to control the encryption process, send key and plaintext, and receive ciphertext.
 This implementation supports AES-128, AES-192, and AES-256.
@@ -116,6 +121,24 @@ This trigger channel is assumed to be connected to such a trigger signal.
 Please note that an IP parameter `ENABLE_EXTERNAL_TRIGGER` should be set to true to enable this feature.
 If this parameter is set to false, the trigger signal is hardwired to low level internally so that there is no need to connect the trigger signal.
 This parameter can be set in the IP customization GUI in Vivado block design.
+
+## aes128_rsm_rtl
+
+`aes128_rsm_rtl_1_0` directory can be added as an IP repository for Vivado.
+The IP core has an AXI4-Lite slave port.
+Its address map is similar to the AIST core wrapper as follows:
+
+|      Address      |     Width   |   Description     |
+|:-----------------:|:-----------:|:-----------------:|
+| `BASE` + `0x00`   |   128 bit   |  Key (R/W)        |
+| `BASE` + `0x10`   |   128 bit   |  Plaintext (R/W)  |
+| `BASE` + `0x20`   |   128 bit   |  Ciphertext (R)   |
+| `BASE` + `0x30`   |   32 bit    |  Control          |
+| `BASE` + `0x34`   |   32 bit    |  Rotate           |
+
+The valid range of the `rotate` register is from 0 to 15.
+Like the other IP cores, it has an output port `o_running` to indicate the encryption process is running.
+
 
 # License
 

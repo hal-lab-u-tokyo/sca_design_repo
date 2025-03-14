@@ -1,100 +1,103 @@
 //
 //    Copyright (C) 2025 The University of Tokyo
 //    
-//    File:          /aist_aes_core_1_0/hdl/aist_aes_core_v1_0_S_AXI.v
+//    File:          /aes128_rsm_rtl_1_0/hdl/aes128_rsm_rtl_v1_0_S_AXI.v
 //    Project:       sca_design_repo
 //    Author:        Takuya Kojima in The University of Tokyo (tkojima@hal.ipc.i.u-tokyo.ac.jp)
-//    Created Date:  24-01-2025 16:02:39
-//    Last Modified: 14-03-2025 05:33:23
+//    Created Date:  14-03-2025 05:47:54
+//    Last Modified: 14-03-2025 06:29:41
 //
+
+
 
 `timescale 1 ns / 1 ps
 
-module aist_aes_core_v1_0_S_AXI #
-(
-	// Users to add parameters here
+	module aes128_rsm_rtl_v1_0_S_AXI #
+	(
+		// Users to add parameters here
 
-	// User parameters ends
-	// Do not modify the parameters beyond this line
+		// User parameters ends
+		// Do not modify the parameters beyond this line
 
-	// Width of S_AXI data bus
-	parameter integer C_S_AXI_DATA_WIDTH	= 32,
-	// Width of S_AXI address bus
-	parameter integer C_S_AXI_ADDR_WIDTH	= 6
-)
-(
-	// Users to add ports here
-	output o_running,
+		// Width of S_AXI data bus
+		parameter integer C_S_AXI_DATA_WIDTH	= 32,
+		// Width of S_AXI address bus
+		parameter integer C_S_AXI_ADDR_WIDTH	= 6
+	)
+	(
+		// Users to add ports here
+		output o_running,
 
-	// User ports ends
-	// Do not modify the ports beyond this line
+		// User ports ends
+		// Do not modify the ports beyond this line
 
-	// Global Clock Signal
-	input wire  S_AXI_ACLK,
-	// Global Reset Signal. This Signal is Active LOW
-	input wire  S_AXI_ARESETN,
-	// Write address (issued by master, acceped by Slave)
-	input wire [C_S_AXI_ADDR_WIDTH-1 : 0] S_AXI_AWADDR,
-	// Write channel Protection type. This signal indicates the
-		// privilege and security level of the transaction, and whether
-		// the transaction is a data access or an instruction access.
-	input wire [2 : 0] S_AXI_AWPROT,
-	// Write address valid. This signal indicates that the master signaling
-		// valid write address and control information.
-	input wire  S_AXI_AWVALID,
-	// Write address ready. This signal indicates that the slave is ready
-		// to accept an address and associated control signals.
-	output wire  S_AXI_AWREADY,
-	// Write data (issued by master, acceped by Slave)
-	input wire [C_S_AXI_DATA_WIDTH-1 : 0] S_AXI_WDATA,
-	// Write strobes. This signal indicates which byte lanes hold
-		// valid data. There is one write strobe bit for each eight
-		// bits of the write data bus.
-	input wire [(C_S_AXI_DATA_WIDTH/8)-1 : 0] S_AXI_WSTRB,
-	// Write valid. This signal indicates that valid write
-		// data and strobes are available.
-	input wire  S_AXI_WVALID,
-	// Write ready. This signal indicates that the slave
-		// can accept the write data.
-	output wire  S_AXI_WREADY,
-	// Write response. This signal indicates the status
-		// of the write transaction.
-	output wire [1 : 0] S_AXI_BRESP,
-	// Write response valid. This signal indicates that the channel
-		// is signaling a valid write response.
-	output wire  S_AXI_BVALID,
-	// Response ready. This signal indicates that the master
-		// can accept a write response.
-	input wire  S_AXI_BREADY,
-	// Read address (issued by master, acceped by Slave)
-	input wire [C_S_AXI_ADDR_WIDTH-1 : 0] S_AXI_ARADDR,
-	// Protection type. This signal indicates the privilege
-		// and security level of the transaction, and whether the
-		// transaction is a data access or an instruction access.
-	input wire [2 : 0] S_AXI_ARPROT,
-	// Read address valid. This signal indicates that the channel
-		// is signaling valid read address and control information.
-	input wire  S_AXI_ARVALID,
-	// Read address ready. This signal indicates that the slave is
-		// ready to accept an address and associated control signals.
-	output wire  S_AXI_ARREADY,
-	// Read data (issued by slave)
-	output wire [C_S_AXI_DATA_WIDTH-1 : 0] S_AXI_RDATA,
-	// Read response. This signal indicates the status of the
-		// read transfer.
-	output wire [1 : 0] S_AXI_RRESP,
-	// Read valid. This signal indicates that the channel is
-		// signaling the required read data.
-	output wire  S_AXI_RVALID,
-	// Read ready. This signal indicates that the master can
-		// accept the read data and response information.
-	input wire  S_AXI_RREADY
-);
+		// Global Clock Signal
+		input wire  S_AXI_ACLK,
+		// Global Reset Signal. This Signal is Active LOW
+		input wire  S_AXI_ARESETN,
+		// Write address (issued by master, acceped by Slave)
+		input wire [C_S_AXI_ADDR_WIDTH-1 : 0] S_AXI_AWADDR,
+		// Write channel Protection type. This signal indicates the
+			// privilege and security level of the transaction, and whether
+			// the transaction is a data access or an instruction access.
+		input wire [2 : 0] S_AXI_AWPROT,
+		// Write address valid. This signal indicates that the master signaling
+			// valid write address and control information.
+		input wire  S_AXI_AWVALID,
+		// Write address ready. This signal indicates that the slave is ready
+			// to accept an address and associated control signals.
+		output wire  S_AXI_AWREADY,
+		// Write data (issued by master, acceped by Slave)
+		input wire [C_S_AXI_DATA_WIDTH-1 : 0] S_AXI_WDATA,
+		// Write strobes. This signal indicates which byte lanes hold
+			// valid data. There is one write strobe bit for each eight
+			// bits of the write data bus.
+		input wire [(C_S_AXI_DATA_WIDTH/8)-1 : 0] S_AXI_WSTRB,
+		// Write valid. This signal indicates that valid write
+			// data and strobes are available.
+		input wire  S_AXI_WVALID,
+		// Write ready. This signal indicates that the slave
+			// can accept the write data.
+		output wire  S_AXI_WREADY,
+		// Write response. This signal indicates the status
+			// of the write transaction.
+		output wire [1 : 0] S_AXI_BRESP,
+		// Write response valid. This signal indicates that the channel
+			// is signaling a valid write response.
+		output wire  S_AXI_BVALID,
+		// Response ready. This signal indicates that the master
+			// can accept a write response.
+		input wire  S_AXI_BREADY,
+		// Read address (issued by master, acceped by Slave)
+		input wire [C_S_AXI_ADDR_WIDTH-1 : 0] S_AXI_ARADDR,
+		// Protection type. This signal indicates the privilege
+			// and security level of the transaction, and whether the
+			// transaction is a data access or an instruction access.
+		input wire [2 : 0] S_AXI_ARPROT,
+		// Read address valid. This signal indicates that the channel
+			// is signaling valid read address and control information.
+		input wire  S_AXI_ARVALID,
+		// Read address ready. This signal indicates that the slave is
+			// ready to accept an address and associated control signals.
+		output wire  S_AXI_ARREADY,
+		// Read data (issued by slave)
+		output wire [C_S_AXI_DATA_WIDTH-1 : 0] S_AXI_RDATA,
+		// Read response. This signal indicates the status of the
+			// read transfer.
+		output wire [1 : 0] S_AXI_RRESP,
+		// Read valid. This signal indicates that the channel is
+			// signaling the required read data.
+		output wire  S_AXI_RVALID,
+		// Read ready. This signal indicates that the master can
+			// accept the read data and response information.
+		input wire  S_AXI_RREADY
+	);
 
 	wire [127:0] w_key, w_plaintext, w_ciphertext;
-	wire w_key_ready, w_plaintext_ready;
-	wire w_key_valid, w_ciphertext_valid;
-	reg r_key_ready, r_plaintext_ready;
+	wire w_key_valid, w_plaintext_valid;
+	wire w_ciphertext_valid;
+	reg r_key_valid, r_plaintext_valid;
+	reg [3:0] r_rotate;
 
 	// AXI4LITE signals
 	reg [C_S_AXI_ADDR_WIDTH-1 : 0] 	axi_awaddr;
@@ -234,8 +237,9 @@ module aist_aes_core_v1_0_S_AXI #
 			slv_reg9 <= 0;
 			slv_reg10 <= 0;
 			slv_reg11 <= 0;
-			r_key_ready <= 1'b0;
-			r_plaintext_ready <= 1'b0;
+			r_rotate <= 4'b0000;
+			r_key_valid <= 1'b0;
+			r_plaintext_valid <= 1'b0;
 		end else begin
 			if (slv_reg_wren) begin
 				case ( axi_awaddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] )
@@ -306,7 +310,12 @@ module aist_aes_core_v1_0_S_AXI #
 					// 8-11 are read-only
 					4'hC: begin
 						if (S_AXI_WSTRB[0]) begin
-							{r_key_ready, r_plaintext_ready} <= S_AXI_WDATA[1:0];
+							{r_key_valid, r_plaintext_valid} <= S_AXI_WDATA[1:0];
+						end
+					end
+					4'hD: begin
+						if (S_AXI_WSTRB[0]) begin
+							r_rotate <= S_AXI_WDATA[3:0];
 						end
 					end
 					default : begin
@@ -321,11 +330,11 @@ module aist_aes_core_v1_0_S_AXI #
 					end
 				endcase
 			end else begin
-				if (r_key_ready) begin
-					r_key_ready <= 1'b0;
+				if (r_key_valid) begin
+					r_key_valid <= 1'b0;
 				end
-				if (r_plaintext_ready) begin
-					r_plaintext_ready <= 1'b0;
+				if (r_plaintext_valid) begin
+					r_plaintext_valid <= 1'b0;
 				end
 			end
 			if (w_ciphertext_valid) begin
@@ -425,7 +434,8 @@ module aist_aes_core_v1_0_S_AXI #
 			4'h9   : reg_data_out <= slv_reg9;
 			4'hA   : reg_data_out <= slv_reg10;
 			4'hB   : reg_data_out <= slv_reg11;
-			4'hC   : reg_data_out <= {30'b0, r_key_ready, r_plaintext_ready};
+			4'hC   : reg_data_out <= {30'b0, r_key_valid, r_plaintext_valid};
+			4'hD   : reg_data_out <= {28'b0, r_rotate};
 			default : reg_data_out <= 0;
 		endcase
 	end
@@ -448,35 +458,33 @@ module aist_aes_core_v1_0_S_AXI #
 	assign w_key = {slv_reg0, slv_reg1, slv_reg2, slv_reg3};
 	assign w_plaintext = {slv_reg4, slv_reg5, slv_reg6, slv_reg7};
 
-	reg r_key_ready_delay, r_plaintext_ready_delay;
+	reg r_key_valid_delay, r_plaintext_valid_delay;
 
-	assign w_key_ready = r_key_ready & !r_key_ready_delay;
-	assign w_plaintext_ready = r_plaintext_ready & !r_plaintext_ready_delay;
+	assign w_key_valid = r_key_valid & !r_key_valid_delay;
+	assign w_plaintext_valid = r_plaintext_valid & !r_plaintext_valid_delay;
 
 	always @( posedge S_AXI_ACLK ) begin
 		if ( S_AXI_ARESETN == 1'b0 ) begin
-			r_key_ready_delay <= 1'b0;
-			r_plaintext_ready_delay <= 1'b0;
+			r_key_valid_delay <= 1'b0;
+			r_plaintext_valid_delay <= 1'b0;
 		end else begin
-			r_key_ready_delay <= r_key_ready;
-			r_plaintext_ready_delay <= r_plaintext_ready;
+			r_key_valid_delay <= r_key_valid;
+			r_plaintext_valid_delay <= r_plaintext_valid;
 		end
 	end
 
-	AES_Composite_enc aes_core0(
-		.CLK(S_AXI_ACLK),
-		.RSTn(S_AXI_ARESETN),
-		.Kin(w_key),
-		.Din(w_plaintext),
-		.Dout(w_ciphertext),
-		.Krdy(w_key_ready),
-		.Drdy(w_plaintext_ready),
-		.Kvld(w_key_valid),
-		.Dvld(w_ciphertext_valid),
-		.EN(1'b1),
-		.BSY(o_running)
+	AES128_RSM_Core aes_rsm_core0 (
+		.clk(S_AXI_ACLK),
+		.reset_n(S_AXI_ARESETN),
+		.i_rotate(r_rotate),
+		.i_key(w_key),
+		.i_key_valid(w_key_valid),
+		.i_plaintext(w_plaintext),
+		.i_plaintext_valid(w_plaintext_valid),
+		.o_ciphertext(w_ciphertext),
+		.o_ciphertext_valid(w_ciphertext_valid),
+		.o_busy(o_running)
 	);
 
 	// User logic ends
-
-endmodule
+	endmodule

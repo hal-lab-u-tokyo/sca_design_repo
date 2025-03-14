@@ -1,11 +1,11 @@
 /*
 *    Copyright (C) 2024 The University of Tokyo
 *    
-*    File:          /examples/aes128_hls/src/AES_Encrypt.cpp
+*    File:          /aes128_hls/src/AES_Encrypt.cpp
 *    Project:       sakura-x-shell
 *    Author:        Takuya Kojima in The University of Tokyo (tkojima@hal.ipc.i.u-tokyo.ac.jp)
 *    Created Date:  14-07-2024 04:10:57
-*    Last Modified: 14-07-2024 04:10:58
+*    Last Modified: 14-03-2025 02:41:26
 */
 
 
@@ -178,7 +178,6 @@ void AES128Encrypt(const unsigned char *key, const unsigned char *plaintext, uns
 	unsigned char state[SIZE];
 	unsigned char scheduled_key[SIZE];
 	ap_int<8> rcon = 1;
-	ap_int<8> rcon_shift;
 
 	#pragma HLS array_partition variable=state complete
 	#pragma HLS array_partition variable=scheduled_key complete
