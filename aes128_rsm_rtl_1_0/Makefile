@@ -15,6 +15,8 @@ SEED ?= 10
 hdl/rsm_tables.v:
 	python generate_mask.py -o $@ --seed ${SEED}
 
-.PHONY: clean
+.PHONY: clean genmask
 clean:
 	rm -f hdl/rsm_tables.v
+
+genmask: hdl/rsm_tables.v

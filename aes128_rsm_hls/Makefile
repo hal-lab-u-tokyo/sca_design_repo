@@ -18,5 +18,9 @@ all: hls_${TARGET_BOARD}_aes_rsm_enc/kernel.xml
 src/Masked_Table.cpp:
 	python generate_mask.py -o $@ --seed ${SEED}
 
+.PHONY: genmask
+
+genmask: src/Masked_Table.cpp
+
 hls_${TARGET_BOARD}_aes_rsm_enc/kernel.xml: src/Masked_Table.cpp
 	vitis_hls -f create_ip.tcl target-board=${TARGET_BOARD} target-freq=${TARGET_FREQ}MHz
