@@ -1,11 +1,11 @@
 //
 //    Copyright (C) 2025 The University of Tokyo
 //    
-//    File:          /aes128_rsm_rtl_1_0/hdl/aes128_rsm_core.v
+//    File:          /examples/ip_repo/aes128_rsm_rtl_1_0/hdl/aes128_rsm_core.v
 //    Project:       sca_design_repo
 //    Author:        Takuya Kojima in The University of Tokyo (tkojima@hal.ipc.i.u-tokyo.ac.jp)
 //    Created Date:  14-03-2025 04:35:17
-//    Last Modified: 14-03-2025 05:40:25
+//    Last Modified: 17-05-2025 06:08:34
 //
 
 
@@ -41,15 +41,21 @@ module AES128_RSM_Core
 		.i_state(r_state), .i_key(r_round_key), .i_rotate(r_rotate), .i_last_round(r_round[9]), .o_state(w_next_state)
 	);
 
-	assign o_ciphertext = r_state;
+
+`define USE_M_TABLE
+`define USE_MS_TABLE
+`include "rsm_tables.v"
+`undef USE_M_TABLE
+`undef USE_MS_TABLE
+
+	wire [127:0] M = M_TABLE(i_rotate);
+	wire [127:0] MS = MS_TABLE(r_rotate);
+
+	// finally, eliminate the mask
+	assign o_ciphertext = r_state ^ MS;
 	assign o_ciphertext_valid = r_ciphertext_valid;
 	assign o_busy = |r_round || i_plaintext_valid || r_ciphertext_valid;
 
-`define USE_M_TABLE
-`include "rsm_tables.v"
-`undef USE_M_TABLE
-
-	wire [127:0] M = M_TABLE(i_rotate);
 	always @(posedge clk or negedge reset_n) begin
 		if (~reset_n) begin
 			r_state <= 0;
@@ -139,18 +145,14 @@ module AES_Round(
 
 	// Mask tables
 	`define USE_MMS_TABLE
-	`define USE_MS_TABLE
 	`include "rsm_tables.v"
 	`undef USE_MMS_TABLE
-	`undef USE_MS_TABLE
 
 	wire [127:0] MMS;
-	wire [127:0] MS;
 	assign MMS = MMS_TABLE(i_rotate + 1);
-	assign MS = MS_TABLE(i_rotate + 1);
 
 	// AddRoundKey with mask
-	assign o_state = (i_last_round) ? {sr3, sr2, sr1, sr0} ^ MS ^ i_key :
+	assign o_state = (i_last_round) ? {sr3, sr2, sr1, sr0} ^ i_key :
 		{sc3, sc2, sc1, sc0} ^ MMS ^ i_key;
 
 endmodule
