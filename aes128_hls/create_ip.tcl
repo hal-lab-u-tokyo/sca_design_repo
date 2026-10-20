@@ -1,11 +1,11 @@
 #
-#    Copyright (C) 2025 The University of Tokyo
+#    Copyright (C) 2026 University of Tsukuba
 #    
-#    File:          /examples/ip_repo/aes128_hls/create_ip.tcl
+#    File:          /aes128_hls/create_ip.tcl
 #    Project:       sca_design_repo
-#    Author:        Takuya Kojima in The University of Tokyo (tkojima@hal.ipc.i.u-tokyo.ac.jp)
-#    Created Date:  24-01-2025 07:00:59
-#    Last Modified: 25-01-2025 04:40:24
+#    Author:        Takuya Kojima in University of Tsukuba (tkojima@lila.cs.tsukuba.ac.jp)
+#    Created Date:  21-10-2026 01:05:46
+#    Last Modified: 21-10-2026 01:05:49
 #
 
 
@@ -60,6 +60,8 @@ if {${target_board} eq "sakura-x"} {
   set_part {xc7k160tfbg676-1}
 } elseif {${target_board} eq "cw305"} {
   set_part {xc7a100tftg256-2}
+} elseif {${target_board} eq "cw310"} {
+  set_part {xc7k410tfbg676-2}
 } else {
   puts "Unknown target board. Please set FPGA part manually."
   set_part ${target_part}
