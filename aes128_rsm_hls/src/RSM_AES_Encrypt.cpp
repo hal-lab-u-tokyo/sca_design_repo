@@ -1,12 +1,13 @@
 /*
-*    Copyright (C) 2024 The University of Tokyo
+*    Copyright (C) 2026 University of Tsukuba
 *    
 *    File:          /aes128_rsm_hls/src/RSM_AES_Encrypt.cpp
 *    Project:       sca_design_repo
-*    Author:        Takuya Kojima in The University of Tokyo (tkojima@hal.ipc.i.u-tokyo.ac.jp)
-*    Created Date:  14-07-2024 04:10:57
-*    Last Modified: 14-03-2025 02:40:27
+*    Author:        Takuya Kojima in University of Tsukuba (tkojima@lila.cs.tsukuba.ac.jp)
+*    Created Date:  21-10-2026 01:36:22
+*    Last Modified: 21-10-2026 01:41:24
 */
+
 
 #include "ap_int.h"
 
@@ -16,6 +17,7 @@
 
 void Sbox(unsigned char *in, unsigned char *out)
 {
+	#pragma HLS inline
 	*out = sbox_table[*in];
 }
 
@@ -31,8 +33,7 @@ void SubBytes(unsigned char* state, unsigned char rotate)
 
 void AddRoundKey(unsigned char* state, unsigned char* expanded_key)
 {
-	// #pragma HLS inline off
-
+	#pragma HLS inline
 	for (unsigned char i = 0; i < SIZE; i++) {
 		#pragma HLS unroll
 		state[i] ^= expanded_key[i];
